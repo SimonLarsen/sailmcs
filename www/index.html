@@ -4,25 +4,62 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="css/theme.css" rel="stylesheet">
 		<link href="css/style.css" rel="stylesheet">
 		<title>SailMCS</title>
 	</head>
 	<body>
-		<div class="container">
-			<div class="page-header">
+		<div class="wide-header">
+			<div class="container">
 				<h1>SailMCS</h1>
+				<p>
+					Simulated Annealing Iterated Local search for the Maximum Common Subgraph problem
+				</p>
 			</div>
+		</div>
 
-			<p>SailMCS is an inexact algorithm for the multiple maximum common edge subgraph problem.</p>
+		<div class="container">
+			<h2 id="about">About SailMCS</h2>
 
-			<h2>Download</h2>
+			<p>SailMCS is a heuristic algorithm for the multi-MCES problem.
+			Using a combination of simulated annealing and iterated local search,
+			it is able to find good alignments and large substructures for multiple,
+			large graphs.</p>
+
+			<h2 id="download">Download</h2>
+
 			<p>The source code is available at <a href="http://github.com/SimonLarsen/sailmcs.git">http://github.com/SimonLarsen/sailmcs.git</a>.</p>
 			<p>Test data and supplementary material is available <a href="#">here</a>.</p>
 
-			<h2>Usage</h2>
+			<h2 id="compilation">Compilation</h2>
+
+			<p>Requirements:</p>
+
+			<ul>
+				<li>Modern compiler supporting C++11 and OpenMP (gcc 0.?.?, clang ?.?)</li>
+				<li>Make</li>
+				<li>CMake &gt;= ?</li>
+				<li>Boost &gt;= ?</li>
+			</ul>
+
+			<p>With all requirements installed, run the following commands:</p>
+
+<pre>
+git clone https://github.com/SimonLarsen/sailmcs.git
+cd sailmcs
+cmake . && make
+</pre>
+
+			<h2 id="usage">Usage</h2>
+
 			<pre>sailmcs -t 600 -o mcs.sif -O alignment.txt graph1.sif graph2.sif graph3.sif</pre>
 
-			<h2>Citation</h2>
+			<h2 id="formats">Supported formats</h2>
+
+			<p>SailMCS supports the following graph formats:</p>
+
+			<h2 id="citation">Citation</h2>
+
 			<p>A. Author, B. Author, and C. Author. A Simulated Annealing Algorithm for Maximum Common Edge Subgraph Detection in Biological Networks. <i>Journal Name</i>, 1(2):34-56, 2015.</p>
 		</div>
 	</body>
