@@ -1,0 +1,6 @@
+[submodule "tclap"]
+	path = tclap
+	url = https://github.com/SimonLarsen/tclap.git
+[submodule "graphio"]
+	path = graphio
+	url = https://github.com/SimonLarsen/graphio.git
