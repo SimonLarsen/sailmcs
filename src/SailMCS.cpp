@@ -14,7 +14,14 @@
 
 #include <sailmcs/ils/ILS.hpp>
 #include <sailmcs/ils/perturbate/Pheromone.hpp>
+
+#include <sailmcs/sa/IAnnealingSchedule.hpp>
 #include <sailmcs/sa/Linear.hpp>
+#include <sailmcs/sa/Adaptive.hpp>
+
+#include <sailmcs/ls/ILocalSearch.hpp>
+#include <sailmcs/ls/FirstImprovement.hpp>
+#include <sailmcs/ls/BestImprovement.hpp>
 #include <sailmcs/ls/BestLocal.hpp>
 
 using namespace sailmcs;
@@ -35,8 +42,14 @@ int main(int argc, const char **argv) {
 		TCLAP::ValueArg<std::string> outGraphArg("o", "output-graph", "Writing solution graph to file.", false, "", "path", cmd);
 		TCLAP::ValueArg<std::string> outTableArg("O", "output-table", "Write alignment table to file.", false, "", "path", cmd);
 
+		TCLAP::ValueArg<float> evaporationArg("e", "evaporation", "Evaporation rate for pheromones [0,1). Default: 0.1", false, 0.1f, "rate", cmd);
+		TCLAP::ValueArg<float> minPheromoneArg("p", "min-pheromone", "Minimum amount of pheromone allowed for any pair. Default: 10", false, 10.0f, "pheromone", cmd);
+
 		TCLAP::ValueArg<std::string> lsArg("L", "local-search", "Local search strategy {first, best, vertex-best}. Default: vertex-best", false, "vertex-best", "strategy", cmd);
+
 		TCLAP::ValueArg<std::string> annealingArg("A", "annealing", "Annealing schedule {linear, adaptive}. Default: linear", false, "linear", "schedule", cmd);
+		TCLAP::ValueArg<float> startTemperatureArg("T", "start-temperature", "Starting temperature for linear annealing. Default: 20", false, 20.0f, "temperature", cmd);
+		TCLAP::ValueArg<float> temperatureRiseArg("R", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 5", false, 5.0f, "rate", cmd);
 
 		TCLAP::UnlabeledMultiArg<std::string> filesArg("files", "Graph files.", true, "GRAPHS", cmd);
 
@@ -44,7 +57,17 @@ int main(int argc, const char **argv) {
 		cmd.parse(argc, argv);
 
 		std::chrono::seconds time(timeArg.getValue());
+		float evaporation = evaporationArg.getValue();
+		float min_pheromone = minPheromoneArg.getValue();
+		float start_temperature = startTemperatureArg.getValue();
+		float temperature_rise = temperatureRiseArg.getValue();
 		const std::vector<std::string> &graphFiles = filesArg.getValue();
+
+		if(evaporation < 0.0f || evaporation > 1.0f) throw std::invalid_argument("Evaporation rate must be in [0,1)");
+		if(min_pheromone <= 0.0f) throw std::invalid_argument("Min. pheromone level must be > 0.");
+		if(start_temperature <= 0.0f) throw std::invalid_argument("Start temperature must be > 0.");
+		if(temperature_rise <= 0.0f) throw std::invalid_argument("Temperature rise rate must be > 0.");
+		if(graphFiles.size() <= 1) throw std::invalid_argument("Please supply at least two graphs.");
 
 		// Load graph files
 		std::vector<Graph> graphs(graphFiles.size(), 0);
@@ -60,11 +83,23 @@ int main(int argc, const char **argv) {
 			}
 		);
 
-		sa::Linear annealing(50.0f);
-		ls::BestLocal ls;
-		ils::perturbate::Pheromone perturbator(graphs, 0.1f, 1.0f);
+		// Perturbator instance
+		ils::perturbate::Pheromone perturbator(graphs, evaporation, min_pheromone);
 
-		ils::ILS ils(graphs, time, annealing, ls, perturbator);
+		// Annealing schedule
+		sa::IAnnealingSchedule *annealing;
+		if(annealingArg.getValue() == "linear") annealing = new sa::Linear(start_temperature);
+		else if(annealingArg.getValue() == "adaptive") annealing = new sa::Adaptive(start_temperature, temperature_rise);
+		else throw std::invalid_argument("Unknown annealing schedule: " + annealingArg.getValue());
+
+		// Local search strategy
+		ls::ILocalSearch *ls;
+		if(lsArg.getValue() == "first") ls = new ls::FirstImprovement();
+		else if(lsArg.getValue() == "best") ls = new ls::BestImprovement();
+		else if(lsArg.getValue() == "vertex-best") ls = new ls::BestLocal();
+		else throw std::invalid_argument("Unknown local search strategy: " + lsArg.getValue());
+
+		ils::ILS ils(graphs, time, *annealing, *ls, perturbator);
 
 		ils_ptr = &ils;
 		std::signal(SIGINT, [](int signal){ ils_ptr->stop(); });

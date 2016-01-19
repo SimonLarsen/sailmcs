@@ -8,7 +8,7 @@ if(HELP2MAN_BINARY)
 	add_custom_command(
 		OUTPUT sailmcs.7.gz
 		MAIN_DEPENDENCY sailmcs.7
-		COMMAND ${GZIP_BINARY} -k sailmcs.7
+		COMMAND ${GZIP_BINARY} -k -f sailmcs.7
 	)
 
 	add_custom_target(
