@@ -13,19 +13,12 @@
 			<div class="container">
 				<h1>SailMCS</h1>
 				<p>
-					A Simulated Annealing Iterated Local search for the Maximum Common Subgraph problem
+					A heuristic algorith for the multiple maximum common subgraph problem
 				</p>
 			</div>
 		</div>
 
 		<div class="container">
-			<h2 id="about">About SailMCS</h2>
-
-			<p>SailMCS is a heuristic algorithm for the multi-MCES problem.
-			Using a combination of simulated annealing and iterated local search,
-			it is able to find good alignments and large substructures for multiple,
-			large graphs.</p>
-
 			<h2 id="download">Download</h2>
 
 			<p>The source code is available at <a href="http://github.com/SimonLarsen/sailmcs.git">http://github.com/SimonLarsen/sailmcs.git</a>.</p>
@@ -36,10 +29,11 @@
 			<p>Requirements:</p>
 
 			<ul>
-				<li>Modern compiler supporting C++11 and OpenMP (gcc 0.?.?, clang ?.?)</li>
+				<li>Modern compiler supporting C++11 and OpenMP</li>
 				<li>Make</li>
-				<li>CMake &gt;= ?</li>
+				<li>CMake &gt;= 2.8</li>
 				<li>Boost &gt;= ?</li>
+				<li>help2man (optional, used for man page generation)</li>
 			</ul>
 
 			<p>With all requirements installed, run the following commands:</p>
@@ -57,6 +51,14 @@ cmake . && make
 			<h2 id="formats">Supported formats</h2>
 
 			<p>SailMCS supports the following graph formats:</p>
+
+			<h2 id="license">License</h2>
+
+			<p>SailMCS is free software: you can redistribute it and/or modify it under the terms of the
+			GNU General Public License as published by the Free Software Foundation,
+			either version 3 of the License, or (at your option) any later version.</p>
+
+			<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href="http://www.gnu.org/licenses">GNU General Public License</a> for more details.</p>
 
 			<h2 id="citation">Citation</h2>
 
