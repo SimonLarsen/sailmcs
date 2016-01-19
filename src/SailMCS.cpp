@@ -28,12 +28,16 @@ int main(int argc, const char **argv) {
 		TCLAP::CmdLine cmd(
 			"sailmcs",
 			"A heuristic algorithm for the multiple maximum common subgraph problem.",
-			"1.0", "Simon Larsen <simonhffh@gmail.com>"
+			"1.0", "Simon Larsen <simonhffh@gmail.com>."
 		);
 
 		TCLAP::ValueArg<size_t> timeArg("t", "time", "Number of seconds to run before terminating.", true, 0, "seconds", cmd);
 		TCLAP::ValueArg<std::string> outGraphArg("o", "output-graph", "Writing solution graph to file.", false, "", "path", cmd);
 		TCLAP::ValueArg<std::string> outTableArg("O", "output-table", "Write alignment table to file.", false, "", "path", cmd);
+
+		TCLAP::ValueArg<std::string> lsArg("L", "local-search", "Local search strategy {first, best, vertex-best}. Default: vertex-best", false, "vertex-best", "strategy", cmd);
+		TCLAP::ValueArg<std::string> annealingArg("A", "annealing", "Annealing schedule {linear, adaptive}. Default: linear", false, "linear", "schedule", cmd);
+
 		TCLAP::UnlabeledMultiArg<std::string> filesArg("files", "Graph files.", true, "GRAPHS", cmd);
 
 		// Parse arguments

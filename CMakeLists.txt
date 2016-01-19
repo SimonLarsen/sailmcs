@@ -16,6 +16,8 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
 endif()
 
 find_package(Boost REQUIRED)
+find_program(GZIP_BINARY NAMES gzip PATHS /bin /usr/bin /usr/local/bin)
+find_program(HELP2MAN_BINARY NAMES help2man PATHS /bin /usr/bin /usr/local/bin)
 
 include_directories(
 	${CMAKE_SOURCE_DIR}/include
@@ -24,9 +26,7 @@ include_directories(
 	${Boost_INCLUDE_DIRS}
 )
 
-add_executable(sailmcs
-	src/SailMCS.cpp
-)
+add_executable(sailmcs src/SailMCS.cpp)
 
 target_link_libraries(sailmcs
 	sailmcs_ils
@@ -35,3 +35,6 @@ target_link_libraries(sailmcs
 
 add_subdirectory(src/sailmcs)
 add_subdirectory(man)
+
+install(TARGETS sailmcs RUNTIME DESTINATION bin)
+install(FILES ${CMAKE_BINARY_DIR}/man/sailmcs.7.gz DESTINATION share/man/man7 OPTIONAL)
