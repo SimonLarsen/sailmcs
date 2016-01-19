@@ -12,6 +12,7 @@
 #include <sailmcs/Graph.hpp>
 #include <sailmcs/Solution.hpp>
 
+#include <sailmcs/SailMCS.hpp>
 #include <sailmcs/ils/ILS.hpp>
 #include <sailmcs/ils/perturbate/Pheromone.hpp>
 
@@ -27,7 +28,7 @@
 using namespace sailmcs;
 
 namespace {
-	ils::ILS *ils_ptr;
+	SailMCS *mcs_ptr;
 }
 
 int main(int argc, const char **argv) {
@@ -99,11 +100,15 @@ int main(int argc, const char **argv) {
 		else if(lsArg.getValue() == "vertex-best") ls = new ls::BestLocal();
 		else throw std::invalid_argument("Unknown local search strategy: " + lsArg.getValue());
 
+		// ILS instance
 		ils::ILS ils(graphs, time, *annealing, *ls, perturbator);
 
-		ils_ptr = &ils;
-		std::signal(SIGINT, [](int signal){ ils_ptr->stop(); });
-		ils.run();
+		// MCS runner
+		SailMCS mcs(time, ils);
+
+		mcs_ptr = &mcs;
+		std::signal(SIGINT, [](int signal){ mcs_ptr->stop(); });
+		mcs.run();
 		std::signal(SIGINT, SIG_DFL);
 
 	} catch(std::exception &e) {

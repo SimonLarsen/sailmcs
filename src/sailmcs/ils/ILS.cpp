@@ -16,7 +16,6 @@ namespace ils {
 	, n(graphs.size())
 	, graphs(&graphs)
 	, time(time)
-	, stopped(false)
 	, annealing(&annealing)
 	, ls(&ls)
 	, perturbator(&perturbator)
@@ -33,17 +32,6 @@ namespace ils {
 		best_solution = current_solution;
 	}
 
-	void ILS::run() {
-		auto startTime = std::chrono::system_clock::now();
-		while((std::chrono::system_clock::now() - startTime) < time && !stopped) {
-			step();
-		}
-	}
-
-	void ILS::stop() {
-		stopped = true;
-	}
-
 	void ILS::step() {
 		construct();
 		evaluate();
@@ -51,10 +39,6 @@ namespace ils {
 
 	const Solution &ILS::getSolution() const {
 		return best_solution;
-	}
-
-	void ILS::setSolution(const Solution &solution) {
-		best_solution = solution;
 	}
 
 	void ILS::construct() {
@@ -96,7 +80,7 @@ namespace ils {
 		if(real_dist(rand_gen) < prob) {
 			current_solution = new_solution;
 			if(current_solution.quality > best_solution.quality) {
-				setSolution(current_solution);
+				best_solution = current_solution;
 				perturbator->update(current_solution, best_solution);
 			}
 		}

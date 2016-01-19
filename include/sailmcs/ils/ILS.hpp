@@ -3,15 +3,15 @@
 
 #include <vector>
 #include <chrono>
-#include <atomic>
 #include <sailmcs/Graph.hpp>
+#include <sailmcs/IAligner.hpp>
 #include <sailmcs/sa/IAnnealingSchedule.hpp>
 #include <sailmcs/ls/ILocalSearch.hpp>
 #include <sailmcs/ils/perturbate/IPerturbator.hpp>
 
 namespace sailmcs {
 namespace ils {
-	class ILS {
+	class ILS : public IAligner {
 		public:
 			ILS(
 				const std::vector<Graph> &graphs,
@@ -21,12 +21,8 @@ namespace ils {
 				ils::perturbate::IPerturbator &perturbator
 			);
 
-			void run();
-			void stop();
-			void step();
-			const Solution &getSolution() const;
-			void setSolution(const Solution &solution);
-			void solutionGraph(Graph &out) const;
+			virtual void step();
+			virtual const Solution &getSolution() const;
 
 		private:
 			void construct();
@@ -35,7 +31,6 @@ namespace ils {
 			size_t m, n;
 			const std::vector<Graph> *graphs;
 			std::chrono::seconds time;
-			std::atomic<bool> stopped;
 			sa::IAnnealingSchedule *annealing;
 			ls::ILocalSearch *ls;
 			ils::perturbate::IPerturbator *perturbator;
