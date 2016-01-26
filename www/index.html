@@ -19,55 +19,37 @@
 		</div>
 
 		<div class="container">
-			<h2 id="download">Download</h2>
-
-			<p>The source code is available at <a href="http://github.com/SimonLarsen/sailmcs" class="uri">http://github.com/SimonLarsen/sailmcs</a>.</p>
-
-			<p>Test data and supplementary material is available <a href="files/sailmcs_data.zip">here</a>.</p>
-
-			<h2 id="compilation">Compilation</h2>
-
-			<p>Requirements:</p>
-
-			<ul>
-				<li>Modern C++ compiler supporting C++11 and OpenMP</li>
-				<li>Make</li>
-				<li>CMake &gt;= 2.8</li>
-				<li>Boost headers</li>
-				<li>help2man (optional, used for man page generation)</li>
-			</ul>
-
-			<p>With all requirements installed, run the following commands:</p>
-
-			<pre><code>git clone --recursive https://github.com/SimonLarsen/sailmcs.git
+<h1 id="sailmcs">SailMCS</h1>
+<p>SailMCS is a heuristic algorithm for the multiple maximum common subgraph problem on simple (undirected, unweighted) graphs.</p>
+<h2 id="download">Download</h2>
+<p>The source code is available at <a href="http://github.com/SimonLarsen/sailmcs" class="uri">http://github.com/SimonLarsen/sailmcs</a>.</p>
+<p>Test data and supplementary material is available <a href="files/sailmcs_data.zip">here</a>.</p>
+<h2 id="compilation">Compilation</h2>
+<p>Requirements:</p>
+<ul>
+<li>Modern C++ compiler supporting C++11 and OpenMP</li>
+<li>Make</li>
+<li>CMake &gt;= 2.8</li>
+<li>Boost headers</li>
+<li>help2man (optional, used for man page generation)</li>
+</ul>
+<p>With all requirements installed, run the following commands:</p>
+<pre><code>git clone --recursive https://github.com/SimonLarsen/sailmcs.git
 cd sailmcs
 cmake . &amp;&amp; make</code></pre>
-
-			<p>Optionally, you can install the binary and documentation with:</p>
-
-			<pre><code>sudo make install</code></pre>
-
-			<h2 id="usage">Usage</h2>
-
-			<p>To align three graphs, <code>graph1.sif</code>, <code>graph2.sif</code> and <code>graph3.sif</code>, for 600 seconds run:</p>
-
-			<pre><code>sailmcs -t 600 -o mcs.sif -O alignment.txt graph1.sif graph2.sif graph3.sif</code></pre>
-
-			<p>The maximum common subgraph will be written to a file <code>mcs.sif</code> and the table of vertex alignments will be written to <code>alignment.txt</code>.</p>
-
-			<h2 id="supported-formats">Supported formats</h2>
-
-			<p>For a list of supported graph formats see <a href="https://github.com/SimonLarsen/graphio/wiki/Formats">here</a>.</p>
-
-			<h2 id="license">License</h2>
-
-			<p>SailMCS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-
-			<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href="http://www.gnu.org/licenses">GNU General Public License</a> for more details.</p>
-
-			<h2 id="citation">Citation</h2>
-
-			<p>A. Author, B. Author, and C. Author. A Simulated Annealing Algorithm for Maximum Common Edge Subgraph Detection in Biological Networks. <em>Journal Name</em>, 1(2):34-56, 2016.</p>
+<p>Optionally, you can install the binary and documentation with:</p>
+<pre><code>sudo make install</code></pre>
+<h2 id="usage">Usage</h2>
+<p>To align three graphs for 600 seconds run:</p>
+<pre><code>sailmcs -t 600 -o mcs.sif -O alignment.txt graph1.sif graph2.sif graph3.sif</code></pre>
+<p>The maximum common subgraph will be written to a file <code>mcs.sif</code> and the table of vertex alignments will be written to <code>alignment.txt</code>.</p>
+<h2 id="supported-formats">Supported formats</h2>
+<p>For a list of supported graph formats see <a href="https://github.com/SimonLarsen/graphio/wiki/Formats">here</a>.</p>
+<h2 id="license">License</h2>
+<p>SailMCS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href="http://www.gnu.org/licenses">GNU General Public License</a> for more details.</p>
+<h2 id="citation">Citation</h2>
+<p>To be announced.</p>
 		</div>
 	</body>
 </html>

@@ -53,4 +53,4 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 ## Citation
 
-A. Author, B. Author, and C. Author. A Simulated Annealing Algorithm for Maximum Common Edge Subgraph Detection in Biological Networks. *Journal Name*, 1(2):34-56, 2016.
+To be announced.
