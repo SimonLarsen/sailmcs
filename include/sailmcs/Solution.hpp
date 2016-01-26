@@ -65,6 +65,46 @@ namespace sailmcs {
 			file << "\n";
 		}
 	}
+
+	inline void solution_graph(
+		const std::vector<Graph> &graphs,
+		const Solution &solution,
+		Graph &out
+	) {
+		size_t m = solution.alignment.size1();
+		size_t n = solution.alignment.size2();
+
+		out = Graph(m);
+
+		// Create vertex labels
+		for(size_t i = 0; i < m; ++i) {
+			std::string label;
+			for(size_t g = 0; g < n; ++g) {
+				int u = solution.alignment(i, g);
+				label.append(graphs[g][u].label);
+				if(g < n-1) {
+					label.append("-");
+				}
+			}
+			out[i].label = label;
+		}
+
+		// Add edges and edge exception attributes
+		for(size_t i = 0; i < m; ++i) {
+			for(size_t j = i+1; j < m; ++j) {
+				int count = 0;
+				for(size_t g = 0; g < n; ++g) {
+					int u = solution.alignment(i, g);
+					int v = solution.alignment(j, g);
+					if(is_adjacent(graphs[g], u, v)) {
+						count++;
+					}
+				}
+
+				if(count == (int)n) add_edge(i, j, out);
+			}
+		}
+	}
 }
 
 #endif

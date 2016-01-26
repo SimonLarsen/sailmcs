@@ -106,10 +106,21 @@ int main(int argc, const char **argv) {
 		// MCS runner
 		SailMCS mcs(time, ils);
 
+		// Run algorithm
 		mcs_ptr = &mcs;
 		std::signal(SIGINT, [](int signal){ mcs_ptr->stop(); });
 		mcs.run();
 		std::signal(SIGINT, SIG_DFL);
+
+		if(outGraphArg.isSet()) {
+			Graph out_graph(0);
+			solution_graph(graphs, mcs.getSolution(), out_graph);
+			graphio::writeGraph(out_graph, outGraphArg.getValue());
+		}
+
+		if(outTableArg.isSet()) {
+			write_alignment_file(graphs, mcs.getSolution(), outTableArg.getValue());
+		}
 
 	} catch(std::exception &e) {
 		std::cerr << "error: " << e.what() << std::endl;
