@@ -4,34 +4,53 @@ SailMCS
 SailMCS is a heuristic algorithm for the multiple maximum common subgraph
 problem on simple (undirected, unweighted) graphs.
 
-## Compilation ##
+## Download
 
-Requirements
+The source code is available at [http://github.com/SimonLarsen/sailmcs](http://github.com/SimonLarsen/sailmcs).
 
-* Modern compiler supporting C++11
+Test data and supplementary material is available [here](files/sailmcs_data.zip).
+
+## Compilation
+
+Requirements:
+
+* Modern C++ compiler supporting C++11 and OpenMP
 * Make
-* CMake >= 2.8
-* Boost >= ?
-* help2man (optional, for man page generation)
+* CMake &gt;= 2.8
+* Boost headers
+* help2man (optional, used for man page generation)
 
-```
-git clone --recursive https://github.com/SimonLarsen/sailmcs.git
-cd sailmcs
-cmake . && make
-```
+With all requirements installed, run the following commands:
 
-## License ##
+    git clone --recursive https://github.com/SimonLarsen/sailmcs.git
+    cd sailmcs
+    cmake . && make
 
-SailMCS is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Optionally, you can install the binary and documentation with:
 
-SailMCS is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+    sudo make install
 
-You should have received a copy of the GNU General Public License
-along with SailMCS.
-If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
+## Usage
+
+To align three graphs for 600 seconds run:
+
+    sailmcs -t 600 -o mcs.sif -O alignment.txt graph1.sif graph2.sif graph3.sif
+
+The maximum common subgraph will be written to a file `mcs.sif` and the table of vertex alignments
+will be written to `alignment.txt`.
+
+## Supported formats
+
+For a list of supported graph formats see [here](https://github.com/SimonLarsen/graphio/wiki/Formats).
+
+## License
+
+SailMCS is free software: you can redistribute it and/or modify it under the terms of the
+GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses) for more details.
+
+## Citation
+
+A. Author, B. Author, and C. Author. A Simulated Annealing Algorithm for Maximum Common Edge Subgraph Detection in Biological Networks. *Journal Name*, 1(2):34-56, 2016.
