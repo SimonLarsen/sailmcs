@@ -21,9 +21,9 @@
 #include <sailmcs/sa/Adaptive.hpp>
 
 #include <sailmcs/ls/ILocalSearch.hpp>
-#include <sailmcs/ls/FirstImprovement.hpp>
-#include <sailmcs/ls/BestImprovement.hpp>
-#include <sailmcs/ls/BestLocal.hpp>
+#include <sailmcs/ls/First.hpp>
+#include <sailmcs/ls/Best.hpp>
+#include <sailmcs/ls/VertexBest.hpp>
 
 using namespace sailmcs;
 
@@ -95,9 +95,9 @@ int main(int argc, const char **argv) {
 
 		// Local search strategy
 		ls::ILocalSearch *ls;
-		if(lsArg.getValue() == "first") ls = new ls::FirstImprovement();
-		else if(lsArg.getValue() == "best") ls = new ls::BestImprovement();
-		else if(lsArg.getValue() == "vertex-best") ls = new ls::BestLocal();
+		if(lsArg.getValue() == "first") ls = new ls::First();
+		else if(lsArg.getValue() == "best") ls = new ls::Best();
+		else if(lsArg.getValue() == "vertex-best") ls = new ls::VertexBest();
 		else throw std::invalid_argument("Unknown local search strategy: " + lsArg.getValue());
 
 		// ILS instance

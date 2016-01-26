@@ -1,11 +1,11 @@
-#ifndef SAILMCS_LS_FIRSTIMPROVEMENT_HPP
-#define SAILMCS_LS_FIRSTIMPROVEMENT_HPP 
+#ifndef SAILMCS_LS_VERTEXBEST_HPP
+#define SAILMCS_LS_VERTEXBEST_HPP
 
 #include <sailmcs/ls/ILocalSearch.hpp>
 
 namespace sailmcs {
 namespace ls {
-	class FirstImprovement : public ILocalSearch {
+	class VertexBest : public ILocalSearch {
 		public:
 			virtual void localSearch(
 				const std::vector<Graph> &graphs,

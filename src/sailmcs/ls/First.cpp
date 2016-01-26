@@ -1,4 +1,4 @@
-#include <sailmcs/ls/FirstImprovement.hpp>
+#include <sailmcs/ls/First.hpp>
 
 #include <algorithm>
 #include <numeric>
@@ -9,7 +9,7 @@ namespace ublas = boost::numeric::ublas;
 
 namespace sailmcs {
 namespace ls {
-	void FirstImprovement::localSearch(
+	void First::localSearch(
 		const std::vector<Graph> &graphs,
 		Solution &solution
 	) {

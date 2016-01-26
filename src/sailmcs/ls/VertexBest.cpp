@@ -1,4 +1,4 @@
-#include <sailmcs/ls/BestImprovement.hpp>
+#include <sailmcs/ls/VertexBest.hpp>
 
 #include <algorithm>
 #include <random>
@@ -8,7 +8,7 @@ namespace ublas = boost::numeric::ublas;
 
 namespace sailmcs {
 namespace ls {
-	void BestImprovement::localSearch(
+	void VertexBest::localSearch(
 		const std::vector<Graph> &graphs,
 		Solution &solution
 	) {
@@ -30,6 +30,9 @@ namespace ls {
 		// Active index map
 		std::vector<int> active(m, 0);
 
+		// Temp vector for storing adj. list unions
+		std::vector<size_t> union_tmp(m);
+
 		std::random_device rd;
 		std::minstd_rand rand_gen(rd());
 
@@ -40,49 +43,40 @@ namespace ls {
 			repeat = false;
 
 			for(size_t g = 0; g < n-1; ++g) {
-				int best_delta = 0;
-				size_t best_i = 0;
-				size_t best_j = 0;
+				for(size_t i = 0; i < m; ++i) {
+					int best_delta = 0;
+					size_t best_j = 0;
 
-				#pragma omp parallel
-				{
-					int prv_best_delta = 0;
-					size_t prv_best_i = 0;
-					size_t prv_best_j = 0;
+					#pragma omp parallel
+					{
+						int prv_best_delta = 0;
+						size_t prv_best_j = 0;
 
-					#pragma omp for schedule(static, 1)
-					for(size_t i = 0; i < m; ++i) {
+						#pragma omp for schedule(static)
 						for(size_t j = i+1; j < m; ++j) {
 							if(active[i] < iteration && active[j] < iteration) continue;
 
 							int delta = get_delta(i, j, g, neighbors, edges);
 
-							if(delta > 0) {
-								active[i] = iteration+1;
-								active[j] = iteration+1;
-							}
-
 							if(delta > prv_best_delta) {
 								prv_best_delta = delta;
-								prv_best_i = i;
 								prv_best_j = j;
 							}
 						}
-					}
 
-					#pragma omp critical
-					{
-						if(prv_best_delta > best_delta) {
-							best_delta = prv_best_delta;
-							best_i = prv_best_i;
-							best_j = prv_best_j;
+						#pragma omp critical
+						{
+							if(prv_best_delta > best_delta) {
+								best_delta = prv_best_delta;
+								best_j = prv_best_j;
+							}
 						}
 					}
-				}
 
-				if(best_delta > 0) {
-					repeat = true;
-					swap(best_i, best_j, g, iteration, neighbors, edges, solution, active);
+					if(best_delta > 0) {
+						repeat = true;
+						swap(i, best_j, g, iteration, neighbors, edges, solution, active);
+					}
 				}
 			}
 

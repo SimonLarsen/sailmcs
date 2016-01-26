@@ -1,11 +1,11 @@
-#ifndef SAILMCS_LS_BESTLOCAL_HPP
-#define SAILMCS_LS_BESTLOCAL_HPP
+#ifndef SAILMCS_LS_FIRST_HPP
+#define SAILMCS_LS_FIRST_HPP 
 
 #include <sailmcs/ls/ILocalSearch.hpp>
 
 namespace sailmcs {
 namespace ls {
-	class BestLocal : public ILocalSearch {
+	class First : public ILocalSearch {
 		public:
 			virtual void localSearch(
 				const std::vector<Graph> &graphs,

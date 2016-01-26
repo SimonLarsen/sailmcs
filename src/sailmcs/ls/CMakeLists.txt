@@ -1,6 +1,6 @@
 add_library(sailmcs_ls
-	BestImprovement.cpp
-	BestLocal.cpp
+	Best.cpp
 	Common.cpp
-	FirstImprovement.cpp
+	First.cpp
+	VertexBest.cpp
 )
