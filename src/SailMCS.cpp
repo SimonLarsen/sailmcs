@@ -43,7 +43,7 @@ int main(int argc, const char **argv) {
 		TCLAP::ValueArg<std::string> outGraphArg("o", "output-graph", "Writing solution graph to file.", false, "", "path", cmd);
 		TCLAP::ValueArg<std::string> outTableArg("O", "output-table", "Write alignment table to file.", false, "", "path", cmd);
 
-		TCLAP::ValueArg<float> evaporationArg("e", "evaporation", "Evaporation rate for pheromones [0,1). Default: 0.1", false, 0.1f, "rate", cmd);
+		TCLAP::ValueArg<float> evaporationArg("e", "evaporation", "Evaporation rate for pheromones [0,1). Default: 0.1", false, 0.3f, "rate", cmd);
 		TCLAP::ValueArg<float> minPheromoneArg("p", "min-pheromone", "Minimum amount of pheromone allowed for any pair. Default: 10", false, 10.0f, "pheromone", cmd);
 
 		TCLAP::ValueArg<std::string> lsArg("L", "local-search", "Local search strategy {first, best, vertex-best}. Default: vertex-best", false, "vertex-best", "strategy", cmd);
