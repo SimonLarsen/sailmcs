@@ -1,13 +1,13 @@
 if(HELP2MAN_BINARY)
 	add_custom_command(
 		OUTPUT sailmcs.7
-		MAIN_DEPENDENCY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sailmcs
+		DEPENDS sailmcs
 		COMMAND ${HELP2MAN_BINARY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sailmcs --include ${CMAKE_SOURCE_DIR}/man/sailmcs.7.h2m --no-info --section 7 -o sailmcs.7
 	)
 
 	add_custom_command(
 		OUTPUT sailmcs.7.gz
-		MAIN_DEPENDENCY sailmcs.7
+		DEPENDS sailmcs.7
 		COMMAND ${GZIP_BINARY} -k -f sailmcs.7
 	)
 

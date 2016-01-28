@@ -15,6 +15,11 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -msse3")
 endif()
 
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -fopenmp")
+	list(APPEND STANDARD_LIBRARIES m)
+endif()
+
 find_package(Boost REQUIRED)
 find_program(GZIP_BINARY NAMES gzip PATHS /bin /usr/bin /usr/local/bin)
 find_program(HELP2MAN_BINARY NAMES help2man PATHS /bin /usr/bin /usr/local/bin)
@@ -31,6 +36,7 @@ add_executable(sailmcs src/SailMCS.cpp)
 target_link_libraries(sailmcs
 	sailmcs_ils
 	sailmcs_ls
+	${STANDARD_LIBRARIES}
 )
 
 add_subdirectory(src/sailmcs)
