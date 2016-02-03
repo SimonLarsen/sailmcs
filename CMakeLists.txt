@@ -28,6 +28,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/include
 	${CMAKE_SOURCE_DIR}/tclap/include
 	${CMAKE_SOURCE_DIR}/graphio/include
+	${CMAKE_SOURCE_DIR}/setops/include
 	${Boost_INCLUDE_DIRS}
 )
 

@@ -4,3 +4,6 @@
 [submodule "graphio"]
 	path = graphio
 	url = https://github.com/SimonLarsen/graphio.git
+[submodule "setops"]
+	path = setops
+	url = https://github.com/SimonLarsen/setops.git

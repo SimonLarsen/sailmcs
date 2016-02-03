@@ -1,7 +1,8 @@
 #include <sailmcs/ls/Common.hpp>
 
-#include <sailmcs/utility/binary_find.hpp>
-#include <sailmcs/utility/difference_iterator.hpp>
+#include <algorithm>
+#include <setops/difference.hpp>
+#include <setops/binary_find.hpp>
 
 namespace sailmcs {
 namespace ls {
@@ -96,7 +97,7 @@ namespace ls {
 		int delta = 0;
 
 		// Find all nodes connected to u not connected to v
-		auto it = make_difference_range<vertex_descriptor, std::vector<vertex_descriptor>::const_iterator>(
+		auto it = setops::set_difference<vertex_descriptor>(
 			neighbors[g][i].begin(), neighbors[g][i].end(),
 			neighbors[g][j].begin(), neighbors[g][j].end()
 		);
@@ -108,7 +109,7 @@ namespace ls {
 		});
 
 		// Find all nodes connected to v not connected to u
-		it = make_difference_range<vertex_descriptor, std::vector<vertex_descriptor>::const_iterator>(
+		it = setops::set_difference<vertex_descriptor>(
 			neighbors[g][j].begin(), neighbors[g][j].end(),
 			neighbors[g][i].begin(), neighbors[g][i].end()
 		);
@@ -134,11 +135,8 @@ namespace ls {
 	) {
 		size_t m = solution.alignment.size1();
 
-		// Temp vector for storing adj. list unions
-		std::vector<size_t> union_tmp(m);
-
 		// Update edge counts for swap
-		auto it = make_difference_range<vertex_descriptor, std::vector<vertex_descriptor>::const_iterator>(
+		auto it = setops::set_difference<vertex_descriptor>(
 			neighbors[g][i].begin(), neighbors[g][i].end(),
 			neighbors[g][j].begin(), neighbors[g][j].end()
 		);
@@ -149,7 +147,7 @@ namespace ls {
 			}
 		});
 
-		it = make_difference_range<vertex_descriptor, std::vector<vertex_descriptor>::const_iterator>(
+		it = setops::set_difference<vertex_descriptor>(
 			neighbors[g][j].begin(), neighbors[g][j].end(),
 			neighbors[g][i].begin(), neighbors[g][i].end()
 		);
@@ -160,20 +158,23 @@ namespace ls {
 			}
 		});
 
+		// Temp vector for storing adj. list diff
+		std::vector<size_t> diff_tmp(m);
+
 		// Find symmetric difference of vertices adjacent to u and v
 		// and flip i <-> j in neighbor lists
-		auto union_end = std::set_symmetric_difference(
+		auto diff_end = std::set_symmetric_difference(
 			neighbors[g][i].begin(), neighbors[g][i].end(),
 			neighbors[g][j].begin(), neighbors[g][j].end(),
-			union_tmp.begin()
+			diff_tmp.begin()
 		);
 
 		std::for_each(
-			union_tmp.begin(),
-			union_end,
+			diff_tmp.begin(),
+			diff_end,
 			[&](const size_t &l) {
-				auto it_i = binary_find(neighbors[g][l].begin(), neighbors[g][l].end(), i);
-				auto it_j = binary_find(neighbors[g][l].begin(), neighbors[g][l].end(), j);
+				auto it_i = setops::binary_find(neighbors[g][l].begin(), neighbors[g][l].end(), i);
+				auto it_j = setops::binary_find(neighbors[g][l].begin(), neighbors[g][l].end(), j);
 
 				if(it_i != neighbors[g][l].end()) {
 					*it_i = j;
