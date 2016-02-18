@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 #include <tclap/CmdLine.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 #include <graphio/GraphReader.hpp>
 #include <graphio/GraphWriter.hpp>
 #include <sailmcs/Graph.hpp>
@@ -31,6 +33,17 @@ namespace {
 	SailMCS *mcs_ptr;
 }
 
+std::chrono::seconds get_time(const std::string &str) {
+	std::vector<std::string> parts;
+	boost::split(parts, str, boost::is_any_of(":"));
+	int seconds = 0;
+	size_t n = parts.size();
+	for(size_t i = 0; i < std::min((size_t)3, n); ++i) {
+		seconds += boost::lexical_cast<int>(parts[n-1-i]) * std::pow(60, i);
+	}
+	return std::chrono::seconds(seconds);
+}
+
 int main(int argc, const char **argv) {
 	try {
 		TCLAP::CmdLine cmd(
@@ -39,7 +52,7 @@ int main(int argc, const char **argv) {
 			"1.0", "Simon Larsen <simonhffh@gmail.com>."
 		);
 
-		TCLAP::ValueArg<size_t> timeArg("t", "time", "Number of seconds to run before terminating.", true, 0, "seconds", cmd);
+		TCLAP::ValueArg<std::string> timeArg("t", "time", "Time to run algorithm before terminating. Format: [[hh:]mm:]ss.", true, "", "time", cmd);
 		TCLAP::ValueArg<std::string> outGraphArg("o", "output-graph", "Writing solution graph to file.", false, "", "path", cmd);
 		TCLAP::ValueArg<std::string> outTableArg("O", "output-table", "Write alignment table to file.", false, "", "path", cmd);
 
@@ -57,7 +70,7 @@ int main(int argc, const char **argv) {
 		// Parse arguments
 		cmd.parse(argc, argv);
 
-		std::chrono::seconds time(timeArg.getValue());
+		std::chrono::seconds time(get_time(timeArg.getValue()));
 		float evaporation = evaporationArg.getValue();
 		float min_pheromone = minPheromoneArg.getValue();
 		float start_temperature = startTemperatureArg.getValue();
