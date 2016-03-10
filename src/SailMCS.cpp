@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <omp.h>
 #include <tclap/CmdLine.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -38,6 +39,9 @@ std::chrono::seconds get_time(const std::string &str) {
 	boost::split(parts, str, boost::is_any_of(":"));
 	int seconds = 0;
 	size_t n = parts.size();
+	if(n > 3) {
+		throw std::invalid_argument("Invalid time string. Use format [[hh:]mm:]ss.");
+	}
 	for(size_t i = 0; i < std::min((size_t)3, n); ++i) {
 		seconds += boost::lexical_cast<int>(parts[n-1-i]) * std::pow(60, i);
 	}
@@ -53,6 +57,7 @@ int main(int argc, const char **argv) {
 		);
 
 		TCLAP::ValueArg<std::string> timeArg("t", "time", "Time to run algorithm before terminating. Format: [[hh:]mm:]ss.", true, "", "time", cmd);
+		TCLAP::ValueArg<int> nthreadsArg("", "nthreads", "Number of threads to use.", false, 0, "threads", cmd);
 		TCLAP::ValueArg<std::string> outGraphArg("o", "output-graph", "Writing solution graph to file.", false, "", "path", cmd);
 		TCLAP::ValueArg<std::string> outTableArg("O", "output-table", "Write alignment table to file.", false, "", "path", cmd);
 
@@ -82,6 +87,12 @@ int main(int argc, const char **argv) {
 		if(start_temperature <= 0.0f) throw std::invalid_argument("Start temperature must be > 0.");
 		if(temperature_rise <= 0.0f) throw std::invalid_argument("Temperature rise rate must be > 0.");
 		if(graphFiles.size() <= 1) throw std::invalid_argument("Please supply at least two graphs.");
+		if(nthreadsArg.isSet() && nthreadsArg.getValue() <= 0) throw std::invalid_argument("Number of threads must be greater than 0.");
+
+		// Set number of threads
+		if(nthreadsArg.isSet()) {
+			omp_set_num_threads(nthreadsArg.getValue());
+		}
 
 		// Load graph files
 		std::vector<Graph> graphs(graphFiles.size(), 0);
