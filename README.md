@@ -32,9 +32,9 @@ Optionally, you can install the binary and documentation with:
 
 ## Usage
 
-To align three graphs for 600 seconds run:
+To align three graphs for 10 minutes run:
 
-    sailmcs -t 600 -o mcs.sif -O alignment.txt graph1.sif graph2.sif graph3.sif
+    sailmcs -t 10:00 -o alignment.txt -g mcs.sif graph1.sif graph2.sif graph3.sif
 
 The maximum common subgraph will be written to a file `mcs.sif` and the table of vertex alignments
 will be written to `alignment.txt`.
