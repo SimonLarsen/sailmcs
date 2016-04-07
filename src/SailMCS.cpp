@@ -17,7 +17,9 @@
 
 #include <sailmcs/SailMCS.hpp>
 #include <sailmcs/ils/ILS.hpp>
+#include <sailmcs/ils/perturbate/IPerturbator.hpp>
 #include <sailmcs/ils/perturbate/Pheromone.hpp>
+#include <sailmcs/ils/perturbate/Uniform.hpp>
 
 #include <sailmcs/sa/IAnnealingSchedule.hpp>
 #include <sailmcs/sa/Linear.hpp>
@@ -61,12 +63,14 @@ int main(int argc, const char **argv) {
 		TCLAP::ValueArg<std::string> outTableArg("o", "output-table", "Write alignment table to file.", false, "", "path", cmd);
 		TCLAP::ValueArg<std::string> outGraphArg("g", "output-graph", "Writing solution graph to file.", false, "", "path", cmd);
 
+		TCLAP::ValueArg<std::string> perturbationArg("P", "perturbation", "Perturbation strategy {pheromone, uniform}. Default: pheromone", false, "pheromone", "strategy", cmd);
 		TCLAP::ValueArg<std::string> lsArg("L", "local-search", "Local search strategy {first, best, vertex-best}. Default: vertex-best", false, "vertex-best", "strategy", cmd);
+		TCLAP::ValueArg<std::string> annealingArg("A", "annealing", "Annealing schedule {linear, adaptive}. Default: adaptive", false, "adaptive", "schedule", cmd);
 
 		TCLAP::ValueArg<float> evaporationArg("e", "evaporation", "Evaporation rate for pheromones [0,1). Default: 0.3", false, 0.3f, "rate", cmd);
 		TCLAP::ValueArg<float> minPheromoneArg("p", "min-pheromone", "Minimum amount of pheromone allowed for any pair. Default: 1.0", false, 1.0f, "amount", cmd);
+		TCLAP::ValueArg<float> uniformPctArg("U", "uniform-pct", "Number of swaps to perform in uniform perturbation. Given as % of vertex count. Default: 0.1", false, 0.1f, "percent", cmd);
 
-		TCLAP::ValueArg<std::string> annealingArg("A", "annealing", "Annealing schedule {linear, adaptive}. Default: adaptive", false, "adaptive", "schedule", cmd);
 		TCLAP::ValueArg<float> startTemperatureArg("T", "start-temperature", "Starting temperature for linear annealing. Default: 10.0", false, 10.0f, "temperature", cmd);
 		TCLAP::ValueArg<float> temperatureRiseArg("R", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 2.0", false, 2.0f, "rate", cmd);
 
@@ -109,7 +113,10 @@ int main(int argc, const char **argv) {
 		);
 
 		// Perturbator instance
-		ils::perturbate::Pheromone perturbator(graphs, evaporation, min_pheromone, nthreads);
+		ils::perturbate::IPerturbator *perturbator;
+		if(perturbationArg.getValue() == "pheromone") perturbator = new ils::perturbate::Pheromone(graphs, evaporation, min_pheromone, nthreads);
+		else if(perturbationArg.getValue() == "uniform") perturbator = new ils::perturbate::Uniform(uniformPctArg.getValue(), graphs);
+		else throw std::invalid_argument("Unknown perturbation strategy: " + perturbationArg.getValue());
 
 		// Annealing schedule
 		sa::IAnnealingSchedule *annealing;
@@ -125,7 +132,7 @@ int main(int argc, const char **argv) {
 		else throw std::invalid_argument("Unknown local search strategy: " + lsArg.getValue());
 
 		// ILS instance
-		ils::ILS ils(graphs, time, *annealing, *ls, perturbator);
+		ils::ILS ils(graphs, time, *annealing, *ls, *perturbator);
 
 		// MCS runner
 		SailMCS mcs(time, ils);
