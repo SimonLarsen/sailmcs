@@ -14,8 +14,9 @@ namespace perturbate {
 		public:
 			Pheromone(
 				const std::vector<Graph> &graphs,
-				float evaporation,
-				float min_pheromone
+				const float evaporation,
+				const float min_pheromone,
+				const size_t nthreads
 			);
 
 			virtual void perturbate(
@@ -36,8 +37,8 @@ namespace perturbate {
 			const std::vector<Graph> *graphs;
 			std::vector<SimilarityMatrix> pheromones;
 
-			std::minstd_rand rand_gen;
-			std::uniform_real_distribution<float> real_dist;
+			std::vector<std::minstd_rand> rand_gen;
+			std::vector<std::uniform_real_distribution<float>> real_dist;
 	};
 }
 }

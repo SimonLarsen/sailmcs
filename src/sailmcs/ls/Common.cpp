@@ -11,8 +11,8 @@ namespace ls {
 		const Solution &solution,
 		std::vector<std::vector<size_t>> &map
 	) {
-		size_t m = solution.alignment.size1();
-		size_t n = solution.alignment.size2();
+		const size_t m = solution.alignment.size1();
+		const size_t n = solution.alignment.size2();
 
 		map.resize(n);
 
@@ -33,8 +33,8 @@ namespace ls {
 		const Solution &solution,
 		edge_count_matrix &edges
 	) {
-		size_t m = solution.alignment.size1();
-		size_t n = solution.alignment.size2();
+		const size_t m = solution.alignment.size1();
+		const size_t n = solution.alignment.size2();
 
 		edges.resize(m, m);
 
@@ -44,8 +44,8 @@ namespace ls {
 
 		for(size_t g = 0; g < n; ++g) {
 			for(auto it = boost::edges(graphs[g]); it.first != it.second; ++it.first) {
-				int u = source(*it.first, graphs[g]);
-				int v = target(*it.first, graphs[g]);
+				vertex_descriptor u = source(*it.first, graphs[g]);
+				vertex_descriptor v = target(*it.first, graphs[g]);
 
 				size_t i = map[g][u];
 				size_t j = map[g][v];
@@ -63,8 +63,8 @@ namespace ls {
 		const Solution &solution,
 		std::vector<neighbor_list> &neighbors
 	) {
-		size_t m = solution.alignment.size1();
-		size_t n = solution.alignment.size2();
+		const size_t m = solution.alignment.size1();
+		const size_t n = solution.alignment.size2();
 
 		neighbors.resize(n-1);
 
@@ -72,9 +72,9 @@ namespace ls {
 			neighbors[g].resize(m);
 
 			for(size_t i = 0; i < m; ++i) {
-				int u = solution.alignment(i, g);
+				vertex_descriptor u = solution.alignment(i, g);
 				for(auto it = adjacent_vertices(u, graphs[g]); it.first != it.second; ++it.first) {
-					int v = *it.first;
+					vertex_descriptor v = *it.first;
 					size_t j = map[g][v];
 
 					if(j != m) {
@@ -87,21 +87,20 @@ namespace ls {
 	}
 
 	int get_delta(
-		size_t i,
-		size_t j,
-		size_t g,
+		const size_t i,
+		const size_t j,
+		const size_t g,
 		const std::vector<neighbor_list> &neighbors,
 		const edge_count_matrix &edges
 	) {
-
 		int delta = 0;
 
 		// Find all nodes connected to u not connected to v
-		auto it = setops::set_difference<vertex_descriptor>(
+		auto it = setops::set_difference<size_t>(
 			neighbors[g][i].begin(), neighbors[g][i].end(),
 			neighbors[g][j].begin(), neighbors[g][j].end()
 		);
-		std::for_each(it.first, it.second, [&](const vertex_descriptor &l) {
+		std::for_each(it.first, it.second, [&](const size_t &l) {
 			if(l != j) {
 				delta -= 2*edges(i, l) - 1;
 				delta += 2*edges(j, l) + 1;
@@ -109,11 +108,11 @@ namespace ls {
 		});
 
 		// Find all nodes connected to v not connected to u
-		it = setops::set_difference<vertex_descriptor>(
+		it = setops::set_difference<size_t>(
 			neighbors[g][j].begin(), neighbors[g][j].end(),
 			neighbors[g][i].begin(), neighbors[g][i].end()
 		);
-		std::for_each(it.first, it.second, [&](const vertex_descriptor &l) {
+		std::for_each(it.first, it.second, [&](const size_t &l) {
 			if(l != i) {
 				delta -= 2*edges(j, l) - 1;
 				delta += 2*edges(i, l) + 1;
@@ -124,42 +123,42 @@ namespace ls {
 	}
 
 	void swap(
-		size_t i,
-		size_t j,
-		size_t g,
-		int iteration,
+		const size_t i,
+		const size_t j,
+		const size_t g,
+		const int iteration,
 		std::vector<neighbor_list> &neighbors,
 		edge_count_matrix &edges,
 		Solution &solution,
 		std::vector<int> &active
 	) {
-		size_t m = solution.alignment.size1();
+		const size_t m = solution.alignment.size1();
+
+		// Temp vector for storing adj. list diff
+		std::vector<size_t> diff_tmp(m);
 
 		// Update edge counts for swap
-		auto it = setops::set_difference<vertex_descriptor>(
+		auto it = setops::set_difference<size_t>(
 			neighbors[g][i].begin(), neighbors[g][i].end(),
 			neighbors[g][j].begin(), neighbors[g][j].end()
 		);
-		std::for_each(it.first, it.second, [&](const vertex_descriptor &l) {
+		std::for_each(it.first, it.second, [&](const size_t &l) {
 			if(l != j) {
 				edges(i, l)--;
 				edges(j, l)++;
 			}
 		});
 
-		it = setops::set_difference<vertex_descriptor>(
+		it = setops::set_difference<size_t>(
 			neighbors[g][j].begin(), neighbors[g][j].end(),
 			neighbors[g][i].begin(), neighbors[g][i].end()
 		);
-		std::for_each(it.first, it.second, [&](const vertex_descriptor &l) {
+		std::for_each(it.first, it.second, [&](const size_t &l) {
 			if(l != i) {
 				edges(j, l)--;
 				edges(i, l)++;
 			}
 		});
-
-		// Temp vector for storing adj. list diff
-		std::vector<size_t> diff_tmp(m);
 
 		// Find symmetric difference of vertices adjacent to u and v
 		// and flip i <-> j in neighbor lists
@@ -200,8 +199,8 @@ namespace ls {
 		const edge_count_matrix &edges,
 		Solution &solution
 	) {
-		size_t m = solution.alignment.size1();
-		size_t n = solution.alignment.size2();
+		const size_t m = solution.alignment.size1();
+		const size_t n = solution.alignment.size2();
 
 		int sum = 0;
 		#pragma omp parallel for reduction(+:sum)

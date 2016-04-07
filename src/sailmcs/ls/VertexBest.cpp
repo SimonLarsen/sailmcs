@@ -1,7 +1,6 @@
 #include <sailmcs/ls/VertexBest.hpp>
 
 #include <algorithm>
-#include <random>
 #include <sailmcs/ls/Common.hpp>
 
 namespace ublas = boost::numeric::ublas;
@@ -29,12 +28,6 @@ namespace ls {
 
 		// Active index map
 		std::vector<int> active(m, 0);
-
-		// Temp vector for storing adj. list unions
-		std::vector<size_t> union_tmp(m);
-
-		std::random_device rd;
-		std::minstd_rand rand_gen(rd());
 
 		int iteration = 0;
 		bool repeat;

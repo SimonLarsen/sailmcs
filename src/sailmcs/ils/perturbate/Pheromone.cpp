@@ -1,30 +1,39 @@
 #include <sailmcs/ils/perturbate/Pheromone.hpp>
 
+#include <omp.h>
+
 namespace sailmcs {
 namespace ils {
 namespace perturbate {
 	Pheromone::Pheromone(
 		const std::vector<Graph> &graphs,
-		float evaporation,
-		float min_pheromone
+		const float evaporation,
+		const float min_pheromone,
+		const size_t nthreads
 	)
 	: n(graphs.size())
 	, evaporation(evaporation)
 	, min_pheromone(min_pheromone)
 	, graphs(&graphs)
 	, pheromones(n-1)
-	, rand_gen(std::random_device{}())
-	, real_dist(0.0f, 1.0f)
 	{
 		// Resize pheromones matrices
 		for(size_t i = 0; i < n-1; ++i) {
 			pheromones[i].resize(num_vertices(graphs[0]), num_vertices(graphs[i+1]), false);
 		}
+
 		// Initialize pheromones
 		for(auto &m : pheromones) {
 			for(auto it1 = m.begin1(); it1 != m.end1(); ++it1) {
 				std::fill(it1.begin(), it1.end(), min_pheromone);
 			}
+		}
+
+		// Create random generators
+		std::random_device rd;
+		for(size_t i = 0; i < nthreads; ++i) {
+			rand_gen.emplace_back(rd());
+			real_dist.emplace_back(0.0f, 1.0f);
 		}
 	}
 
@@ -44,7 +53,7 @@ namespace perturbate {
 
 		// Fill first column of alignment randomly
 		std::iota(out.alignment.begin1(), out.alignment.end1(), 0);
-		std::shuffle(out.alignment.begin1(), out.alignment.end1(), rand_gen);
+		std::shuffle(out.alignment.begin1(), out.alignment.end1(), rand_gen[0]);
 
 		// Align remaining networks
 		size_t start_node;
@@ -57,13 +66,15 @@ namespace perturbate {
 
 				#pragma omp parallel
 				{
+					int tid = omp_get_thread_num();
+
 					size_t prv_best_index = 0;
 					float prv_best_prob = 0.0f;
 
 					#pragma omp for schedule(static)
 					for(size_t index = 0; index < unused[g].size(); ++index) {
 						size_t node = unused[g][index];
-						float prob = real_dist(rand_gen) * pheromones[g-1](start_node, node);
+						float prob = real_dist[tid](rand_gen[tid]) * pheromones[g-1](start_node, node);
 
 						if(prob > prv_best_prob) {
 							prv_best_index = index;

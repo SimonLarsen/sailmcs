@@ -28,8 +28,9 @@ namespace ils {
 	, rand_gen(rd())
 	, real_dist(0.0f, 1.0f)
 	{
-		random_solution(graphs, current_solution);
-		best_solution = current_solution;
+		random_solution(graphs, new_solution);
+		current_solution = new_solution;
+		best_solution = new_solution;
 	}
 
 	void ILS::step() {
@@ -42,24 +43,10 @@ namespace ils {
 	}
 
 	void ILS::construct() {
-		// Generate random alignment
-		auto align_start_time = std::chrono::system_clock::now();
 		perturbator->perturbate(current_solution, best_solution, new_solution);
-		auto align_end_time = std::chrono::system_clock::now();
 
-		// Do local search
-		auto ls_start_time = std::chrono::system_clock::now();
 		ls->localSearch(*graphs, new_solution);
-		auto ls_end_time = std::chrono::system_clock::now();
 
-		#if !defined(NDEBUG)
-		std::cerr << "build align.: " << std::chrono::duration_cast<std::chrono::milliseconds>(align_end_time-align_start_time).count() << " ms" << std::endl;
-		std::cerr << "local search: " << std::chrono::duration_cast<std::chrono::milliseconds>(ls_end_time-ls_start_time).count() << " ms" << std::endl;
-		#endif
-		(void)align_start_time; (void)align_end_time;
-		(void)ls_start_time; (void)ls_end_time;
-
-		// Calculate acceptance prob. for annealing schedule
 		auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(
 			std::chrono::system_clock::now() - start_time
 		);
@@ -71,18 +58,16 @@ namespace ils {
 			current_solution
 		);
 
-		float prob = std::min(
-			1.0f,
-			std::exp((new_solution.quality-current_solution.quality) / temperature)
-		);
+		float q_diff = (float)(new_solution.quality - current_solution.quality) / std::max((float)best_solution.quality, 1.0f) * 100.0f;
 
-		// Replace best solution if accepted
+		float prob = std::min(1.0f, std::exp(q_diff / temperature));
+
 		if(real_dist(rand_gen) < prob) {
 			current_solution = new_solution;
 			if(current_solution.quality > best_solution.quality) {
 				best_solution = current_solution;
-				perturbator->update(current_solution, best_solution);
 			}
+			perturbator->update(current_solution, best_solution);
 		}
 	}
 
@@ -92,6 +77,7 @@ namespace ils {
 		);
 
 		std::cout << elapsed_time.count() << "\t"
+		          << (float)best_solution.quality / num_edges((*graphs)[0]) << "\t"
 		          << best_solution.quality << "\t"
 		          << current_solution.quality << std::endl;
 	}

@@ -18,17 +18,16 @@ namespace sailmcs {
 			boost::numeric::ublas::matrix<int, boost::numeric::ublas::row_major> alignment;
 
 			//! Solution quality
-			int quality;
+			size_t quality;
 	};
 
 	inline void random_solution(const std::vector<Graph> &graphs, Solution &solution) {
-		std::random_device rd;
-		std::minstd_rand rand_gen(rd());
+		const size_t m = solution.alignment.size1();
+		std::minstd_rand rand_gen(std::random_device{}());
 
-		size_t m = solution.alignment.size1();
 		size_t g = 0;
 		for(auto it2 = solution.alignment.begin2(); it2 != solution.alignment.end2(); ++it2) {
-			std::vector<size_t> seq(num_vertices(graphs[g]));
+			std::vector<vertex_descriptor> seq(num_vertices(graphs[g]));
 			std::iota(seq.begin(), seq.end(), 0);
 			std::shuffle(seq.begin(), seq.end(), rand_gen);
 			std::copy(seq.begin(), seq.begin()+m, it2.begin());
