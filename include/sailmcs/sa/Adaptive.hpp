@@ -9,11 +9,13 @@ namespace sa {
 	class Adaptive : public IAnnealingSchedule {
 		public:
 			Adaptive(
-				float min_temperature,
-				float rise
+				const float min_temperature,
+				const float rise,
+				const int restart
 			)
 			: min_temperature(min_temperature)
 			, rise(rise)
+			, restart(restart)
 			, nonimproved(0)
 			{}
 
@@ -26,6 +28,8 @@ namespace sa {
 				if(current.quality > best.quality) nonimproved = 0;
 				else if(current.quality < best.quality) nonimproved++;
 
+				if(nonimproved == restart) nonimproved = 0;
+
 				float temp = min_temperature + rise * std::log(1.0f + nonimproved);
 				return std::max(temp, std::numeric_limits<float>::min());
 			}
@@ -33,6 +37,7 @@ namespace sa {
 		private:
 			float min_temperature;
 			float rise;
+			int restart;
 			int nonimproved;
 	};
 }

@@ -72,7 +72,8 @@ int main(int argc, const char **argv) {
 		TCLAP::ValueArg<float> uniformPctArg("U", "uniform-pct", "Number of swaps to perform in uniform perturbation. Given as % of vertex count. Default: 0.1", false, 0.1f, "percent", cmd);
 
 		TCLAP::ValueArg<float> startTemperatureArg("T", "start-temperature", "Starting temperature for linear annealing. Default: 10.0", false, 10.0f, "temperature", cmd);
-		TCLAP::ValueArg<float> temperatureRiseArg("R", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 2.0", false, 2.0f, "rate", cmd);
+		TCLAP::ValueArg<float> temperatureRiseArg("R", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 1.0", false, 1.0f, "rate", cmd);
+		TCLAP::ValueArg<int> adaptiveRestartArg("", "adaptive-restart", "Adaptive annealing restart threshold. Default: 20.", false, 20, "iterations", cmd);
 
 		TCLAP::UnlabeledMultiArg<std::string> filesArg("files", "Graph files.", true, "GRAPHS", cmd);
 
@@ -84,13 +85,15 @@ int main(int argc, const char **argv) {
 		float min_pheromone = minPheromoneArg.getValue();
 		float start_temperature = startTemperatureArg.getValue();
 		float temperature_rise = temperatureRiseArg.getValue();
+		int adaptive_restart = adaptiveRestartArg.getValue();
 		size_t nthreads = (nthreadsArg.getValue() > 0 ? nthreadsArg.getValue() : omp_get_max_threads());
 		const std::vector<std::string> &graphFiles = filesArg.getValue();
 
 		if(evaporation < 0.0f || evaporation > 1.0f) throw std::invalid_argument("Evaporation rate must be in [0,1)");
-		if(min_pheromone <= 0.0f) throw std::invalid_argument("Min. pheromone level must be > 0.");
-		if(start_temperature <= 0.0f) throw std::invalid_argument("Start temperature must be > 0.");
-		if(temperature_rise <= 0.0f) throw std::invalid_argument("Temperature rise rate must be > 0.");
+		if(min_pheromone <= 0.0f) throw std::invalid_argument("Min. pheromone level must be greater than 0.");
+		if(start_temperature <= 0.0f) throw std::invalid_argument("Start temperature must be greater than 0.");
+		if(temperature_rise <= 0.0f) throw std::invalid_argument("Temperature rise rate must be greater than 0.");
+		if(adaptive_restart <= 0) throw std::invalid_argument("Adaptive annealing restart must be greater than 0.");
 		if(graphFiles.size() <= 1) throw std::invalid_argument("Please supply at least two graphs.");
 		if(nthreads <= 0) throw std::invalid_argument("Number of threads must be greater than 0.");
 
@@ -121,7 +124,7 @@ int main(int argc, const char **argv) {
 		// Annealing schedule
 		sa::IAnnealingSchedule *annealing;
 		if(annealingArg.getValue() == "linear") annealing = new sa::Linear(start_temperature);
-		else if(annealingArg.getValue() == "adaptive") annealing = new sa::Adaptive(start_temperature, temperature_rise);
+		else if(annealingArg.getValue() == "adaptive") annealing = new sa::Adaptive(start_temperature, temperature_rise, adaptive_restart);
 		else throw std::invalid_argument("Unknown annealing schedule: " + annealingArg.getValue());
 
 		// Local search strategy
