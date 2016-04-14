@@ -24,6 +24,7 @@
 #include <sailmcs/sa/IAnnealingSchedule.hpp>
 #include <sailmcs/sa/Linear.hpp>
 #include <sailmcs/sa/Adaptive.hpp>
+#include <sailmcs/sa/None.hpp>
 
 #include <sailmcs/ls/ILocalSearch.hpp>
 #include <sailmcs/ls/First.hpp>
@@ -65,7 +66,7 @@ int main(int argc, const char **argv) {
 
 		TCLAP::ValueArg<std::string> perturbationArg("P", "perturbation", "Perturbation strategy {pheromone, uniform}. Default: pheromone", false, "pheromone", "strategy", cmd);
 		TCLAP::ValueArg<std::string> lsArg("L", "local-search", "Local search strategy {first, best, vertex-best}. Default: vertex-best", false, "vertex-best", "strategy", cmd);
-		TCLAP::ValueArg<std::string> annealingArg("A", "annealing", "Annealing schedule {linear, adaptive}. Default: adaptive", false, "adaptive", "schedule", cmd);
+		TCLAP::ValueArg<std::string> annealingArg("A", "annealing", "Annealing schedule {adaptive, linear, none}. Default: adaptive", false, "adaptive", "schedule", cmd);
 
 		TCLAP::ValueArg<float> evaporationArg("e", "evaporation", "Evaporation rate for pheromones [0,1). Default: 0.3", false, 0.3f, "rate", cmd);
 		TCLAP::ValueArg<float> minPheromoneArg("p", "min-pheromone", "Minimum amount of pheromone allowed for any pair. Default: 1.0", false, 1.0f, "amount", cmd);
@@ -125,6 +126,7 @@ int main(int argc, const char **argv) {
 		sa::IAnnealingSchedule *annealing;
 		if(annealingArg.getValue() == "linear") annealing = new sa::Linear(start_temperature);
 		else if(annealingArg.getValue() == "adaptive") annealing = new sa::Adaptive(start_temperature, temperature_rise, adaptive_restart);
+		else if(annealingArg.getValue() == "none") annealing = new sa::None();
 		else throw std::invalid_argument("Unknown annealing schedule: " + annealingArg.getValue());
 
 		// Local search strategy
