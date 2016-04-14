@@ -18,7 +18,7 @@ namespace sailmcs {
 			boost::numeric::ublas::matrix<int, boost::numeric::ublas::row_major> alignment;
 
 			//! Solution quality
-			size_t quality;
+			int quality;
 	};
 
 	inline void random_solution(const std::vector<Graph> &graphs, Solution &solution) {

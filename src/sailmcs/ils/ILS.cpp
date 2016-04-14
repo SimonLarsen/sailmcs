@@ -58,7 +58,7 @@ namespace ils {
 			current_solution
 		);
 
-		float q_diff = (float)(new_solution.quality - current_solution.quality) / std::max((float)best_solution.quality, 1.0f) * 100.0f;
+		float q_diff = (float)new_solution.quality - current_solution.quality;
 
 		float prob = std::min(1.0f, std::exp(q_diff / temperature));
 
