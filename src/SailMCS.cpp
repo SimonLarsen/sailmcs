@@ -72,7 +72,7 @@ int main(int argc, const char **argv) {
 		TCLAP::ValueArg<float> minPheromoneArg("p", "min-pheromone", "Minimum amount of pheromone allowed for any pair. Default: 1.0", false, 1.0f, "amount", cmd);
 		TCLAP::ValueArg<float> uniformPctArg("", "uniform-pct", "Number of swaps to perform in uniform perturbation. Given as % of vertex count. Default: 0.1", false, 0.1f, "percent", cmd);
 
-		TCLAP::ValueArg<float> startTemperatureArg("", "start-temperature", "Starting temperature for linear annealing. Default: 5.0", false, 20.0f, "temperature", cmd);
+		TCLAP::ValueArg<float> startTemperatureArg("", "start-temperature", "Starting temperature for linear annealing. Default: 20.0", false, 20.0f, "temperature", cmd);
 		TCLAP::ValueArg<float> temperatureRiseArg("", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 10.0", false, 10.0f, "rate", cmd);
 		TCLAP::ValueArg<float> minTemperatureArg("", "min-temperature", "Min. temperature value for adaptive annealing. Default: 2.0", false, 2.0f, "temperature", cmd);
 		TCLAP::ValueArg<int> adaptiveRestartArg("", "adaptive-restart", "Adaptive annealing restart threshold. Default: 20.", false, 20, "iterations", cmd);
