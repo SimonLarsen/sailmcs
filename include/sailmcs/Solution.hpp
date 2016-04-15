@@ -15,7 +15,7 @@ namespace sailmcs {
 			Solution(size_t n, size_t m) : alignment(m, n), quality(0) { }
 
 			//! Vertex mapping
-			boost::numeric::ublas::matrix<int, boost::numeric::ublas::row_major> alignment;
+			boost::numeric::ublas::matrix<vertex_descriptor, boost::numeric::ublas::row_major> alignment;
 
 			//! Solution quality
 			int quality;

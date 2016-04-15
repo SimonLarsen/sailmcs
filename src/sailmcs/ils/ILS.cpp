@@ -2,6 +2,7 @@
 
 #include <random>
 #include <algorithm>
+#include <sailmcs/Verifier.hpp>
 
 namespace sailmcs {
 namespace ils {
@@ -46,6 +47,10 @@ namespace ils {
 		perturbator->perturbate(current_solution, best_solution, new_solution);
 
 		ls->localSearch(*graphs, new_solution);
+
+		#if !defined(NDEBUG)
+		verify(new_solution, *graphs);
+		#endif
 
 		auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(
 			std::chrono::system_clock::now() - start_time
