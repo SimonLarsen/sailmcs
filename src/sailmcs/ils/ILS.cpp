@@ -57,12 +57,11 @@ namespace ils {
 			new_solution,
 			current_solution
 		);
-
 		float q_diff = (float)new_solution.quality - current_solution.quality;
-
 		float prob = std::min(1.0f, std::exp(q_diff / temperature));
 
 		if(real_dist(rand_gen) < prob) {
+			annealing->update(new_solution, current_solution);
 			current_solution = new_solution;
 			if(current_solution.quality > best_solution.quality) {
 				best_solution = current_solution;

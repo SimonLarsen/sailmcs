@@ -17,8 +17,8 @@ namespace sa {
 			virtual float temperature(
 				std::chrono::seconds total_time,
 				std::chrono::seconds elapsed_time,
-				const Solution &current,
-				const Solution &best
+				const Solution &new_solution,
+				const Solution &current_solution
 			) {
 				auto tm = std::chrono::duration_cast<std::chrono::milliseconds>(total_time);
 				auto em = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_time);
@@ -26,6 +26,11 @@ namespace sa {
 				float temp = start_temperature * (1.0f - progress);
 				return std::max(temp, std::numeric_limits<float>::min());
 			}
+
+			virtual void update(
+				const Solution &new_solution,
+				const Solution &current_solution
+			) { }
 
 		private:
 			float start_temperature;

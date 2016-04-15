@@ -70,10 +70,11 @@ int main(int argc, const char **argv) {
 
 		TCLAP::ValueArg<float> evaporationArg("e", "evaporation", "Evaporation rate for pheromones [0,1). Default: 0.3", false, 0.3f, "rate", cmd);
 		TCLAP::ValueArg<float> minPheromoneArg("p", "min-pheromone", "Minimum amount of pheromone allowed for any pair. Default: 1.0", false, 1.0f, "amount", cmd);
-		TCLAP::ValueArg<float> uniformPctArg("U", "uniform-pct", "Number of swaps to perform in uniform perturbation. Given as % of vertex count. Default: 0.1", false, 0.1f, "percent", cmd);
+		TCLAP::ValueArg<float> uniformPctArg("", "uniform-pct", "Number of swaps to perform in uniform perturbation. Given as % of vertex count. Default: 0.1", false, 0.1f, "percent", cmd);
 
-		TCLAP::ValueArg<float> startTemperatureArg("T", "start-temperature", "Starting temperature for linear annealing. Default: 5.0", false, 5.0f, "temperature", cmd);
-		TCLAP::ValueArg<float> temperatureRiseArg("R", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 1.0", false, 1.0f, "rate", cmd);
+		TCLAP::ValueArg<float> startTemperatureArg("", "start-temperature", "Starting temperature for linear annealing. Default: 5.0", false, 5.0f, "temperature", cmd);
+		TCLAP::ValueArg<float> temperatureRiseArg("", "temperature-rise", "Temperature rise rate for adaptive annealing. Default: 1.0", false, 1.0f, "rate", cmd);
+		TCLAP::ValueArg<float> minTemperatureArg("", "min-temperature", "Min. temperature value for adaptive annealing. Default: 1.0", false, 1.0f, "temperature", cmd);
 		TCLAP::ValueArg<int> adaptiveRestartArg("", "adaptive-restart", "Adaptive annealing restart threshold. Default: 20.", false, 20, "iterations", cmd);
 
 		TCLAP::UnlabeledMultiArg<std::string> filesArg("files", "Graph files.", true, "GRAPHS", cmd);
@@ -85,6 +86,7 @@ int main(int argc, const char **argv) {
 		float evaporation = evaporationArg.getValue();
 		float min_pheromone = minPheromoneArg.getValue();
 		float start_temperature = startTemperatureArg.getValue();
+		float min_temperature = minTemperatureArg.getValue();
 		float temperature_rise = temperatureRiseArg.getValue();
 		int adaptive_restart = adaptiveRestartArg.getValue();
 		size_t nthreads = (nthreadsArg.getValue() > 0 ? nthreadsArg.getValue() : omp_get_max_threads());
@@ -93,6 +95,7 @@ int main(int argc, const char **argv) {
 		if(evaporation < 0.0f || evaporation > 1.0f) throw std::invalid_argument("Evaporation rate must be in [0,1)");
 		if(min_pheromone <= 0.0f) throw std::invalid_argument("Min. pheromone level must be greater than 0.");
 		if(start_temperature <= 0.0f) throw std::invalid_argument("Start temperature must be greater than 0.");
+		if(min_temperature <= 0.0f) throw std::invalid_argument("Min. temperature must be greater than 0.");
 		if(temperature_rise <= 0.0f) throw std::invalid_argument("Temperature rise rate must be greater than 0.");
 		if(adaptive_restart <= 0) throw std::invalid_argument("Adaptive annealing restart must be greater than 0.");
 		if(graphFiles.size() <= 1) throw std::invalid_argument("Please supply at least two graphs.");
@@ -125,7 +128,7 @@ int main(int argc, const char **argv) {
 		// Annealing schedule
 		sa::IAnnealingSchedule *annealing;
 		if(annealingArg.getValue() == "linear") annealing = new sa::Linear(start_temperature);
-		else if(annealingArg.getValue() == "adaptive") annealing = new sa::Adaptive(start_temperature, temperature_rise, adaptive_restart);
+		else if(annealingArg.getValue() == "adaptive") annealing = new sa::Adaptive(min_temperature, temperature_rise, adaptive_restart);
 		else if(annealingArg.getValue() == "none") annealing = new sa::None();
 		else throw std::invalid_argument("Unknown annealing schedule: " + annealingArg.getValue());
 

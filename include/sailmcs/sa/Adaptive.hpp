@@ -22,16 +22,21 @@ namespace sa {
 			virtual float temperature(
 				std::chrono::seconds total_time,
 				std::chrono::seconds elapsed_time,
-				const Solution &current,
-				const Solution &best
+				const Solution &new_solution,
+				const Solution &current_solution
 			) {
-				if(current.quality > best.quality) nonimproved = 0;
-				else if(current.quality < best.quality) nonimproved++;
-
-				if(nonimproved == restart) nonimproved = 0;
-
 				float temp = min_temperature + rise * std::log(1.0f + nonimproved);
 				return std::max(temp, std::numeric_limits<float>::min());
+			}
+
+			virtual void update(
+				const Solution &new_solution,
+				const Solution &current_solution
+			) {
+				if(new_solution.quality > current_solution.quality) nonimproved = 0;
+				else if(new_solution.quality < current_solution.quality) nonimproved++;
+
+				if(nonimproved == restart) nonimproved = 0;
 			}
 
 		private:

@@ -11,8 +11,13 @@ namespace sa {
 			virtual float temperature(
 				std::chrono::seconds total_time,
 				std::chrono::seconds elapsed_time,
-				const Solution &current,
-				const Solution &best
+				const Solution &new_solution,
+				const Solution &current_solution
+			) = 0;
+
+			virtual void update(
+				const Solution &new_solution,
+				const Solution &current_solution
 			) = 0;
 	};
 }
