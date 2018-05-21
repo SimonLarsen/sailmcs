@@ -8,7 +8,7 @@ problem on simple (undirected, unweighted) graphs.
 
 The source code is available at [http://github.com/SimonLarsen/sailmcs](http://github.com/SimonLarsen/sailmcs).
 
-Test data and supplementary material is available [here](files/sailmcs_data.zip).
+Test data is available [here](https://sailmcs.compbio.sdu.dk/files/sailmcs_data.zip).
 
 ## Compilation
 
