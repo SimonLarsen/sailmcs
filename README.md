@@ -53,5 +53,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 ## Citation
 
-Simon Larsen, Frederik Alkærsig, Henrik Ditzel, Igor Jurisica, Nicolas Alcaraz and Jan Baumbach (2016). “A Simulated Annealing Algorithm for Maximum Common Edge Subgraph Detection in Biological Networks”. In: *Proceedings of the 2016 conference on genetic and evolutionary
-computation*. ACM. (In press)
+If you use SailMCS in your research, we kindly ask you to cite the following paper: 
+
+> Larsen, Simon J., et al. "A simulated annealing algorithm for maximum common edge subgraph detection in biological networks." Proceedings of the Genetic and Evolutionary Computation Conference 2016. ACM, 2016.
